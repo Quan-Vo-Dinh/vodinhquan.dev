@@ -7,7 +7,10 @@ import {
   memoryService,
   navigationService,
 } from "@/lib/services/service-config";
-import { contactService, settingsService } from "@/lib/services/api-services";
+import {
+  contactService,
+  settingsService,
+} from "@/lib/services/api-services";
 import { useAppStore } from "@/lib/stores";
 import type {
   User,

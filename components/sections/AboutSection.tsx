@@ -11,6 +11,8 @@ import {
   FaHtml5,
   FaLinux,
   FaGitlab,
+  FaGitAlt,
+  FaDocker,
 } from "react-icons/fa";
 import {
   SiTailwindcss,
@@ -29,6 +31,11 @@ import {
   SiMongodb,
   SiReactquery,
   SiRefine,
+  SiPostgresql,
+  SiDocker,
+  SiSocketdotio,
+  SiSwagger,
+  SiNestjs,
 } from "react-icons/si";
 import { PiFileCppFill } from "react-icons/pi";
 import { BentoGrid, BentoCard } from "@/components/ui/bento-grid";
@@ -40,26 +47,47 @@ import { TechStack, Skill } from "@/types";
 
 // Icon mapping
 const iconMap: Record<string, any> = {
+  // Core Languages
   FaHtml5,
   SiTypescript,
-  PiFileCppFill,
+  FaJava, // Java icon from fa
+  PiFileCppFill, // C++ icon
+
+  // Frontend
   FaReact,
   SiNextdotjs,
-  SiRefine,
   SiTailwindcss,
   SiShadcnui,
   AiOutlineAntDesign,
   SiReactquery,
-  SiNotion,
+  SiNotion, // Using as Zustand placeholder
+
+  // Backend
   FaNode,
+  SiNestjs,
+  SiSocketdotio,
+
+  // Databases
+  SiPostgresql,
   SiMongodb,
   DiMsqlServer,
   SiOracle,
-  FaFigma,
+
+  // DevOps & Tools
+  SiDocker,
+  FaDocker, // fallback for Docker
+  FaLinux,
+  FaGitAlt,
   FaGithub,
   FaGitlab,
-  FaLinux,
+  SiSwagger,
   SiPostman,
+
+  // Design
+  FaFigma,
+
+  // Legacy/Fallback
+  SiRefine,
 };
 
 export default function AboutSection() {

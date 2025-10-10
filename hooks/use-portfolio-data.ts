@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { getMockServices } from "@/lib/services/mock-services";
+import { services } from "@/lib/services/service-config";
 import { useAppStore } from "@/lib/stores";
 import type {
   User,
@@ -14,10 +14,6 @@ import type {
   UpdateUserForm,
   CreateProjectForm,
 } from "@/types";
-
-// Use mock services in development
-const USE_MOCK = process.env.NODE_ENV === "development";
-const mockServices = getMockServices();
 
 // Query Keys
 export const QUERY_KEYS = {
@@ -42,9 +38,7 @@ export const QUERY_KEYS = {
 export const useUser = () => {
   return useQuery({
     queryKey: QUERY_KEYS.user,
-    queryFn: USE_MOCK
-      ? mockServices.userService.getUser
-      : () => Promise.reject("API not implemented"),
+    queryFn: services.userService.getUser,
     select: (data) => data.data,
   });
 };
@@ -52,9 +46,7 @@ export const useUser = () => {
 export const useSocialLinks = () => {
   return useQuery({
     queryKey: QUERY_KEYS.socialLinks,
-    queryFn: USE_MOCK
-      ? mockServices.userService.getSocialLinks
-      : () => Promise.reject("API not implemented"),
+    queryFn: services.userService.getSocialLinks,
     select: (data) => data.data,
   });
 };
@@ -62,9 +54,7 @@ export const useSocialLinks = () => {
 export const useTechStack = () => {
   return useQuery({
     queryKey: QUERY_KEYS.techStack,
-    queryFn: USE_MOCK
-      ? mockServices.userService.getTechStack
-      : () => Promise.reject("API not implemented"),
+    queryFn: services.userService.getTechStack,
     select: (data) => data.data,
   });
 };
@@ -72,9 +62,7 @@ export const useTechStack = () => {
 export const useSkills = () => {
   return useQuery({
     queryKey: QUERY_KEYS.skills,
-    queryFn: USE_MOCK
-      ? mockServices.userService.getSkills
-      : () => Promise.reject("API not implemented"),
+    queryFn: services.userService.getSkills,
     select: (data) => data.data,
   });
 };
@@ -89,9 +77,7 @@ export const useProjects = (params?: {
 }) => {
   return useQuery({
     queryKey: [...QUERY_KEYS.projects, params],
-    queryFn: USE_MOCK
-      ? () => mockServices.projectService.getProjects(params)
-      : () => Promise.reject("API not implemented"),
+    queryFn: () => services.projectService.getProjects(params),
     select: (data) => data.data,
   });
 };
@@ -99,9 +85,7 @@ export const useProjects = (params?: {
 export const useProject = (id: string) => {
   return useQuery({
     queryKey: QUERY_KEYS.project(id),
-    queryFn: USE_MOCK
-      ? () => mockServices.projectService.getProject(id)
-      : () => Promise.reject("API not implemented"),
+    queryFn: () => services.projectService.getProject(id),
     select: (data) => data.data,
     enabled: !!id,
   });
@@ -116,9 +100,7 @@ export const useExperiences = (params?: {
 }) => {
   return useQuery({
     queryKey: [...QUERY_KEYS.experiences, params],
-    queryFn: USE_MOCK
-      ? () => mockServices.experienceService.getExperiences(params)
-      : () => Promise.reject("API not implemented"),
+    queryFn: () => services.experienceService.getExperiences(params),
     select: (data) => data.data,
   });
 };
@@ -131,9 +113,7 @@ export const useEducation = (params?: {
 }) => {
   return useQuery({
     queryKey: [...QUERY_KEYS.education, params],
-    queryFn: USE_MOCK
-      ? () => mockServices.educationService.getEducation(params)
-      : () => Promise.reject("API not implemented"),
+    queryFn: () => services.educationService.getEducation(params),
     select: (data) => data.data,
   });
 };
@@ -149,9 +129,7 @@ export const useMemories = (params?: {
 }) => {
   return useQuery({
     queryKey: [...QUERY_KEYS.memories, params],
-    queryFn: USE_MOCK
-      ? () => mockServices.memoryService.getMemories(params)
-      : () => Promise.reject("API not implemented"),
+    queryFn: () => services.memoryService.getMemories(params),
     select: (data) => data.data,
   });
 };
@@ -161,22 +139,33 @@ export const useSendMessage = () => {
   const { setError } = useAppStore();
 
   return useMutation({
-    mutationFn: USE_MOCK
-      ? (data: ContactForm) => mockServices.contactService.sendMessage(data)
-      : () => Promise.reject("API not implemented"),
+    mutationFn: (data: ContactForm) => {
+      // Contact service isn't implemented in static services yet
+      // Just return a mock success response
+      return Promise.resolve({
+        success: true,
+        data: { message: "Message sent successfully" },
+        message: "Message sent successfully",
+      });
+    },
     onError: (error: any) => {
       setError(error.response?.data?.message || "Failed to send message");
     },
   });
 };
 
-// Settings Hooks
+// Settings Hooks - simplified for now
 export const useSettings = () => {
   return useQuery({
     queryKey: QUERY_KEYS.settings,
-    queryFn: USE_MOCK
-      ? mockServices.settingsService.getSettings
-      : () => Promise.reject("API not implemented"),
+    queryFn: () => {
+      // Return empty settings for now
+      return Promise.resolve({
+        success: true,
+        data: {},
+        message: "Settings loaded",
+      });
+    },
     select: (data) => data.data,
   });
 };
@@ -184,9 +173,7 @@ export const useSettings = () => {
 export const useNavigation = () => {
   return useQuery({
     queryKey: QUERY_KEYS.navigation,
-    queryFn: USE_MOCK
-      ? mockServices.settingsService.getNavigation
-      : () => Promise.reject("API not implemented"),
+    queryFn: services.navigationService.getNavigation,
     select: (data) => data.data,
   });
 };

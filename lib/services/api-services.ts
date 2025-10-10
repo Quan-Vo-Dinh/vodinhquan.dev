@@ -402,7 +402,10 @@ export const settingsService = {
   ): Promise<ApiResponse<PortfolioSettings>> => {
     return api.put(API_ENDPOINTS.settings, data);
   },
+};
 
+// Navigation Services
+export const navigationService = {
   // Get navigation items
   getNavigation: (): Promise<ApiResponse<NavigationItem[]>> => {
     return api.get(API_ENDPOINTS.navigation);
