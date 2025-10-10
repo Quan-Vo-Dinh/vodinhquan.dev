@@ -1,0 +1,348 @@
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import {
+  userService,
+  projectService,
+  experienceService,
+  educationService,
+  memoryService,
+  contactService,
+  settingsService,
+} from "@/lib/services/api-services";
+import { useAppStore } from "@/lib/stores";
+import type {
+  User,
+  SocialLink,
+  TechStack,
+  Skill,
+  Project,
+  Experience,
+  Education,
+  Memory,
+  ContactForm,
+  UpdateUserForm,
+  CreateProjectForm,
+} from "@/types";
+
+// Query Keys
+export const QUERY_KEYS = {
+  user: ["user"] as const,
+  socialLinks: ["user", "social-links"] as const,
+  techStack: ["user", "tech-stack"] as const,
+  skills: ["user", "skills"] as const,
+  projects: ["projects"] as const,
+  project: (id: string) => ["projects", id] as const,
+  experiences: ["experiences"] as const,
+  experience: (id: string) => ["experiences", id] as const,
+  education: ["education"] as const,
+  educationItem: (id: string) => ["education", id] as const,
+  memories: ["memories"] as const,
+  memory: (id: string) => ["memories", id] as const,
+  settings: ["settings"] as const,
+  navigation: ["navigation"] as const,
+  messages: ["messages"] as const,
+} as const;
+
+// User Hooks
+export const useUser = () => {
+  return useQuery({
+    queryKey: QUERY_KEYS.user,
+    queryFn: userService.getUser,
+    select: (data) => data.data,
+  });
+};
+
+export const useUpdateUser = () => {
+  const queryClient = useQueryClient();
+  const { setError } = useAppStore();
+
+  return useMutation({
+    mutationFn: (data: UpdateUserForm) => userService.updateUser(data),
+    onSuccess: (response) => {
+      queryClient.setQueryData(QUERY_KEYS.user, response);
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.user });
+    },
+    onError: (error: any) => {
+      setError(error.response?.data?.message || "Failed to update user");
+    },
+  });
+};
+
+export const useSocialLinks = () => {
+  return useQuery({
+    queryKey: QUERY_KEYS.socialLinks,
+    queryFn: userService.getSocialLinks,
+    select: (data) => data.data,
+  });
+};
+
+export const useCreateSocialLink = () => {
+  const queryClient = useQueryClient();
+  const { setError } = useAppStore();
+
+  return useMutation({
+    mutationFn: (data: Omit<SocialLink, "id">) =>
+      userService.createSocialLink(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.socialLinks });
+    },
+    onError: (error: any) => {
+      setError(error.response?.data?.message || "Failed to create social link");
+    },
+  });
+};
+
+export const useUpdateSocialLink = () => {
+  const queryClient = useQueryClient();
+  const { setError } = useAppStore();
+
+  return useMutation({
+    mutationFn: ({ id, data }: { id: string; data: Partial<SocialLink> }) =>
+      userService.updateSocialLink(id, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.socialLinks });
+    },
+    onError: (error: any) => {
+      setError(error.response?.data?.message || "Failed to update social link");
+    },
+  });
+};
+
+export const useDeleteSocialLink = () => {
+  const queryClient = useQueryClient();
+  const { setError } = useAppStore();
+
+  return useMutation({
+    mutationFn: (id: string) => userService.deleteSocialLink(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.socialLinks });
+    },
+    onError: (error: any) => {
+      setError(error.response?.data?.message || "Failed to delete social link");
+    },
+  });
+};
+
+export const useTechStack = () => {
+  return useQuery({
+    queryKey: QUERY_KEYS.techStack,
+    queryFn: userService.getTechStack,
+    select: (data) => data.data,
+  });
+};
+
+export const useSkills = () => {
+  return useQuery({
+    queryKey: QUERY_KEYS.skills,
+    queryFn: userService.getSkills,
+    select: (data) => data.data,
+  });
+};
+
+// Project Hooks
+export const useProjects = (params?: {
+  page?: number;
+  limit?: number;
+  featured?: boolean;
+  visible?: boolean;
+  status?: string;
+}) => {
+  return useQuery({
+    queryKey: [...QUERY_KEYS.projects, params],
+    queryFn: () => projectService.getProjects(params),
+    select: (data) => data.data,
+  });
+};
+
+export const useProject = (id: string) => {
+  return useQuery({
+    queryKey: QUERY_KEYS.project(id),
+    queryFn: () => projectService.getProject(id),
+    select: (data) => data.data,
+    enabled: !!id,
+  });
+};
+
+export const useCreateProject = () => {
+  const queryClient = useQueryClient();
+  const { setError } = useAppStore();
+
+  return useMutation({
+    mutationFn: (data: CreateProjectForm) => projectService.createProject(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.projects });
+    },
+    onError: (error: any) => {
+      setError(error.response?.data?.message || "Failed to create project");
+    },
+  });
+};
+
+export const useUpdateProject = () => {
+  const queryClient = useQueryClient();
+  const { setError } = useAppStore();
+
+  return useMutation({
+    mutationFn: ({ id, data }: { id: string; data: Partial<Project> }) =>
+      projectService.updateProject(id, data),
+    onSuccess: (_, { id }) => {
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.projects });
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.project(id) });
+    },
+    onError: (error: any) => {
+      setError(error.response?.data?.message || "Failed to update project");
+    },
+  });
+};
+
+export const useDeleteProject = () => {
+  const queryClient = useQueryClient();
+  const { setError } = useAppStore();
+
+  return useMutation({
+    mutationFn: (id: string) => projectService.deleteProject(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.projects });
+    },
+    onError: (error: any) => {
+      setError(error.response?.data?.message || "Failed to delete project");
+    },
+  });
+};
+
+// Experience Hooks
+export const useExperiences = (params?: {
+  page?: number;
+  limit?: number;
+  visible?: boolean;
+  type?: string;
+}) => {
+  return useQuery({
+    queryKey: [...QUERY_KEYS.experiences, params],
+    queryFn: () => experienceService.getExperiences(params),
+    select: (data) => data.data,
+  });
+};
+
+export const useExperience = (id: string) => {
+  return useQuery({
+    queryKey: QUERY_KEYS.experience(id),
+    queryFn: () => experienceService.getExperience(id),
+    select: (data) => data.data,
+    enabled: !!id,
+  });
+};
+
+export const useCreateExperience = () => {
+  const queryClient = useQueryClient();
+  const { setError } = useAppStore();
+
+  return useMutation({
+    mutationFn: (data: Omit<Experience, "id" | "createdAt" | "updatedAt">) =>
+      experienceService.createExperience(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.experiences });
+    },
+    onError: (error: any) => {
+      setError(error.response?.data?.message || "Failed to create experience");
+    },
+  });
+};
+
+// Education Hooks
+export const useEducation = (params?: {
+  page?: number;
+  limit?: number;
+  visible?: boolean;
+}) => {
+  return useQuery({
+    queryKey: [...QUERY_KEYS.education, params],
+    queryFn: () => educationService.getEducation(params),
+    select: (data) => data.data,
+  });
+};
+
+export const useCreateEducation = () => {
+  const queryClient = useQueryClient();
+  const { setError } = useAppStore();
+
+  return useMutation({
+    mutationFn: (data: Omit<Education, "id" | "createdAt" | "updatedAt">) =>
+      educationService.createEducation(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.education });
+    },
+    onError: (error: any) => {
+      setError(error.response?.data?.message || "Failed to create education");
+    },
+  });
+};
+
+// Memory Hooks
+export const useMemories = (params?: {
+  page?: number;
+  limit?: number;
+  visible?: boolean;
+  featured?: boolean;
+  tag?: string;
+  mood?: string;
+}) => {
+  return useQuery({
+    queryKey: [...QUERY_KEYS.memories, params],
+    queryFn: () => memoryService.getMemories(params),
+    select: (data) => data.data,
+  });
+};
+
+export const useMemory = (id: string) => {
+  return useQuery({
+    queryKey: QUERY_KEYS.memory(id),
+    queryFn: () => memoryService.getMemory(id),
+    select: (data) => data.data,
+    enabled: !!id,
+  });
+};
+
+export const useCreateMemory = () => {
+  const queryClient = useQueryClient();
+  const { setError } = useAppStore();
+
+  return useMutation({
+    mutationFn: (data: Omit<Memory, "id" | "createdAt" | "updatedAt">) =>
+      memoryService.createMemory(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.memories });
+    },
+    onError: (error: any) => {
+      setError(error.response?.data?.message || "Failed to create memory");
+    },
+  });
+};
+
+// Contact Hook
+export const useSendMessage = () => {
+  const { setError } = useAppStore();
+
+  return useMutation({
+    mutationFn: (data: ContactForm) => contactService.sendMessage(data),
+    onError: (error: any) => {
+      setError(error.response?.data?.message || "Failed to send message");
+    },
+  });
+};
+
+// Settings Hooks
+export const useSettings = () => {
+  return useQuery({
+    queryKey: QUERY_KEYS.settings,
+    queryFn: settingsService.getSettings,
+    select: (data) => data.data,
+  });
+};
+
+export const useNavigation = () => {
+  return useQuery({
+    queryKey: QUERY_KEYS.navigation,
+    queryFn: settingsService.getNavigation,
+    select: (data) => data.data,
+  });
+};

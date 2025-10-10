@@ -9,11 +9,15 @@ import ExperienceSection from "@/components/sections/ExperienceSection";
 import EducationSection from "@/components/sections/EducationSection";
 import ProjectsSection from "@/components/sections/ProjectsSection";
 import MemoriesSection from "@/components/sections/MemoriesSection";
+import { useNavigation } from "@/hooks/use-portfolio-data";
+import { useAppStore } from "@/lib/stores";
 
 export default function Home() {
-  const [activeTab, setActiveTab] = useState("about");
+  const { currentSection, setCurrentSection } = useAppStore();
+  const { data: navigation = [], isLoading: navLoading } = useNavigation();
 
-  const navItems = [
+  // Fallback navigation items
+  const defaultNavItems = [
     { name: "About", id: "about" },
     { name: "Experience", id: "experience" },
     { name: "Education", id: "education" },
@@ -21,8 +25,15 @@ export default function Home() {
     { name: "My Memories", id: "memories" },
   ];
 
+  const navItems = navLoading
+    ? defaultNavItems
+    : navigation.map((item) => ({
+        name: item.name,
+        id: item.slug,
+      }));
+
   const renderContent = () => {
-    switch (activeTab) {
+    switch (currentSection) {
       case "about":
         return <AboutSection />;
       case "experience":
@@ -42,8 +53,8 @@ export default function Home() {
     <div className="min-h-screen bg-[#0A0A0A] text-[#F0F0F0]">
       <ResizableNavbar
         navItems={navItems}
-        activeTab={activeTab}
-        setActiveTab={setActiveTab}
+        activeTab={currentSection}
+        setActiveTab={setCurrentSection}
       />
 
       <div className="flex justify-center min-h-screen pt-32 px-4 sm:px-6">
@@ -55,12 +66,13 @@ export default function Home() {
           <main className="flex-1 relative z-10">
             <AnimatePresence mode="wait">
               <motion.div
-                key={activeTab}
+                key={currentSection}
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -20 }}
                 transition={{ duration: 0.3 }}
-                className="w-full">
+                className="w-full"
+              >
                 {renderContent()}
               </motion.div>
             </AnimatePresence>

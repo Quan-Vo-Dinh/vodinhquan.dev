@@ -35,42 +35,39 @@ import { BentoGrid, BentoCard } from "@/components/ui/bento-grid";
 import { DiMsqlServer } from "react-icons/di";
 import GradientText from "@/components/ui/gradient-text";
 import { AiOutlineAntDesign } from "react-icons/ai";
+import { useUser, useTechStack, useSkills } from "@/hooks/use-portfolio-data";
+import { TechStack, Skill } from "@/types";
+
+// Icon mapping
+const iconMap: Record<string, any> = {
+  FaHtml5,
+  SiTypescript,
+  PiFileCppFill,
+  FaReact,
+  SiNextdotjs,
+  SiRefine,
+  SiTailwindcss,
+  SiShadcnui,
+  AiOutlineAntDesign,
+  SiReactquery,
+  SiNotion,
+  FaNode,
+  SiMongodb,
+  DiMsqlServer,
+  SiOracle,
+  FaFigma,
+  FaGithub,
+  FaGitlab,
+  FaLinux,
+  SiPostman,
+};
 
 export default function AboutSection() {
-  const skills = [
-    "Skilled in software development processes with Agile expertise",
-    "Strong teamwork and collaboration in diverse environments",
-    "Eager to learn and adapt with a proactive approach",
-    "Effective problem-solving and logical thinking for complex issues",
-    "Basic English communication and technical reading",
-    "Mastery of Git for seamless team version control",
-    "Familiar with DevOps practices (CI/CD pipelines)",
-    "Strong attention to code quality and best practices (e.g., clean code)",
-    "Experienced with database design and optimization (SQL/NoSQL)",
-  ];
+  const { data: user, isLoading: userLoading } = useUser();
+  const { data: techStack = [], isLoading: techLoading } = useTechStack();
+  const { data: skills = [], isLoading: skillsLoading } = useSkills();
 
-  const techStack = [
-    { name: "HTML5/CSS3", icon: FaHtml5 },
-    { name: "TypeScript", icon: SiTypescript },
-    { name: "C++", icon: PiFileCppFill },
-    { name: "ReactJS", icon: FaReact },
-    { name: "NextJS", icon: SiNextdotjs },
-    { name: "Refine", icon: SiRefine },
-    { name: "Tailwind CSS", icon: SiTailwindcss },
-    { name: "Shadcn UI", icon: SiShadcnui },
-    { name: "Ant Design", icon: AiOutlineAntDesign },
-    { name: "TanStack Query", icon: SiReactquery },
-    { name: "Zustand", icon: SiNotion },
-    { name: "NodeJS (Express)", icon: FaNode },
-    { name: "MongoDB", icon: SiMongodb },
-    { name: "SQL Server", icon: DiMsqlServer },
-    { name: "Oracle", icon: SiOracle },
-    { name: "Figma", icon: FaFigma },
-    { name: "Github", icon: FaGithub },
-    { name: "Gitlab", icon: FaGitlab },
-    { name: "Linux", icon: FaLinux },
-    { name: "Postman", icon: SiPostman },
-  ];
+  const isLoading = userLoading || techLoading || skillsLoading;
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -99,7 +96,8 @@ export default function AboutSection() {
       initial="hidden"
       animate="visible"
       id="about"
-      className="space-y-12 my-12">
+      className="space-y-12 my-12"
+    >
       {/* Section Title */}
       <motion.h2 variants={itemVariants} className="text-3xl font-bold mb-8">
         <GradientText>About Me</GradientText>
@@ -107,21 +105,17 @@ export default function AboutSection() {
 
       {/* Introduction */}
       <motion.div variants={itemVariants} className="mb-12">
-        <p className="text-lg text-[#F0F0F0] leading-relaxed text-justify">
-          As a dedicated 3rd-year Information Systems student, I am passionately
-          pursuing a career as a Fullstack TypeScript Developer, with a strong
-          foundation in frontend development using ReactJS and NextJS. My
-          journey involves crafting dynamic, user-centric applications while
-          expanding my expertise into backend technologies. Currently, I’m
-          focused on mastering Next.js, Node.js, and Microservices Architecture,
-          eagerly exploring their ecosystems and applying them to real-world
-          projects to sharpen my web development skills. I am actively seeking a
-          web development internship where I can deepen my practical knowledge,
-          collaborate with experienced professionals, and deliver value to the
-          company. This opportunity will allow me to learn from seasoned
-          mentors, grow my skill set, and contribute meaningfully to innovative
-          projects.
-        </p>
+        {isLoading ? (
+          <div className="animate-pulse">
+            <div className="h-4 bg-gray-700 rounded w-full mb-2"></div>
+            <div className="h-4 bg-gray-700 rounded w-full mb-2"></div>
+            <div className="h-4 bg-gray-700 rounded w-3/4 mb-2"></div>
+          </div>
+        ) : (
+          <p className="text-lg text-[#F0F0F0] leading-relaxed text-justify">
+            {user?.bio || "No bio available"}
+          </p>
+        )}
       </motion.div>
 
       {/* Professional Skills */}
@@ -129,24 +123,41 @@ export default function AboutSection() {
         <h3 className="text-2xl font-semibold mb-6">
           <GradientText>Professional Skills</GradientText>
         </h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-          {skills.map((skill, index) => (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: index * 0.05 }}
-              className="flex items-start space-x-2">
+        {isLoading ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+            {Array(6)
+              .fill(0)
+              .map((_, index) => (
+                <div
+                  key={index}
+                  className="animate-pulse flex items-start space-x-2"
+                >
+                  <div className="w-2 h-2 bg-gray-700 rounded-full mt-2 flex-shrink-0"></div>
+                  <div className="h-4 bg-gray-700 rounded w-full"></div>
+                </div>
+              ))}
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+            {skills.map((skill, index) => (
               <motion.div
-                className="w-2 h-2 bg-gradient-to-r from-white to-gray-400 rounded-full mt-2 flex-shrink-0"
-                whileHover={{ scale: 1.5 }}
-              />
-              <span className="text-sm text-[#F0F0F0] leading-relaxed">
-                {skill}
-              </span>
-            </motion.div>
-          ))}
-        </div>
+                key={skill.id}
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: index * 0.05 }}
+                className="flex items-start space-x-2"
+              >
+                <motion.div
+                  className="w-2 h-2 bg-gradient-to-r from-white to-gray-400 rounded-full mt-2 flex-shrink-0"
+                  whileHover={{ scale: 1.5 }}
+                />
+                <span className="text-sm text-[#F0F0F0] leading-relaxed">
+                  {skill.title}
+                </span>
+              </motion.div>
+            ))}
+          </div>
+        )}
       </motion.div>
 
       {/* Tech Stack */}
@@ -154,25 +165,51 @@ export default function AboutSection() {
         <h3 className="text-2xl font-semibold mb-6">
           <GradientText>Stack</GradientText>
         </h3>
-        <div className="grid grid-cols-4 gap-6">
-          {techStack.map((tech, index) => (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: index * 0.1 }}
-              whileHover={{
-                scale: 1.1,
-                y: -5,
-              }}
-              className="flex flex-col items-center space-y-3 p-4 rounded-lg bg-transparent hover:bg-white/5 transition-all duration-300 cursor-pointer">
-              <tech.icon className="w-10 h-10 text-[#F0F0F0]" />
-              <span className="text-sm text-[#F0F0F0] text-center font-light">
-                {tech.name}
-              </span>
-            </motion.div>
-          ))}
-        </div>
+        {isLoading ? (
+          <div className="grid grid-cols-4 gap-6">
+            {Array(12)
+              .fill(0)
+              .map((_, index) => (
+                <div
+                  key={index}
+                  className="animate-pulse flex flex-col items-center space-y-3 p-4"
+                >
+                  <div className="w-10 h-10 bg-gray-700 rounded"></div>
+                  <div className="h-4 bg-gray-700 rounded w-16"></div>
+                </div>
+              ))}
+          </div>
+        ) : (
+          <div className="grid grid-cols-4 gap-6">
+            {techStack.map((tech, index) => {
+              const IconComponent = iconMap[tech.iconName];
+              return (
+                <motion.div
+                  key={tech.id}
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: index * 0.1 }}
+                  whileHover={{
+                    scale: 1.1,
+                    y: -5,
+                  }}
+                  className="flex flex-col items-center space-y-3 p-4 rounded-lg bg-transparent hover:bg-white/5 transition-all duration-300 cursor-pointer"
+                >
+                  {IconComponent ? (
+                    <IconComponent className="w-10 h-10 text-[#F0F0F0]" />
+                  ) : (
+                    <div className="w-10 h-10 bg-gray-600 rounded flex items-center justify-center text-xs">
+                      ?
+                    </div>
+                  )}
+                  <span className="text-sm text-[#F0F0F0] text-center font-light">
+                    {tech.name}
+                  </span>
+                </motion.div>
+              );
+            })}
+          </div>
+        )}
       </motion.div>
     </motion.div>
   );
