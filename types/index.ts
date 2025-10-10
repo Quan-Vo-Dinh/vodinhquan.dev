@@ -31,7 +31,15 @@ export interface SocialLink {
 export interface TechStack {
   id: string;
   name: string;
-  category: "frontend" | "backend" | "database" | "devops" | "design" | "other";
+  category:
+    | "frontend"
+    | "backend"
+    | "database"
+    | "devops"
+    | "design"
+    | "client"
+    | "server"
+    | "other";
   iconName: string; // Icon component name
   proficiencyLevel: 1 | 2 | 3 | 4 | 5; // 1-5 scale
   yearsOfExperience?: number;

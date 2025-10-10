@@ -13,9 +13,9 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Võ Đình Quân - TypeScript Developer",
+  title: "Vo Dinh Quan",
   description:
-    "Portfolio of Võ Đình Quân, a passionate Fullstack TypeScript Developer specializing in React, Next.js, and modern web technologies.",
+    "Portfolio of Vo Dinh Quan, a passionate Fullstack TypeScript Developer specializing in React, Next.js, and modern web technologies.",
 };
 
 export default function RootLayout({

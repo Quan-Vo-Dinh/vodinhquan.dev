@@ -1,101 +1,81 @@
 "use client";
 
 import { motion } from "framer-motion";
-import {
-  FaReact,
-  FaJs,
-  FaFigma,
-  FaGithub,
-  FaNode,
-  FaJava,
-  FaHtml5,
-  FaLinux,
-  FaGitlab,
-  FaGitAlt,
-  FaDocker,
-} from "react-icons/fa";
+import { FaReact, FaNode } from "react-icons/fa";
 import {
   SiTailwindcss,
-  SiFirebase,
-  SiTableau,
-  SiPostman,
   SiNotion,
-  SiClickup,
-  SiJira,
-  SiOpenai,
   SiNextdotjs,
-  SiTypescript,
-  SiNextui,
   SiShadcnui,
   SiOracle,
   SiMongodb,
   SiReactquery,
-  SiRefine,
   SiPostgresql,
   SiDocker,
   SiSocketdotio,
   SiSwagger,
   SiNestjs,
+  SiRedis,
 } from "react-icons/si";
-import { PiFileCppFill } from "react-icons/pi";
-import { BentoGrid, BentoCard } from "@/components/ui/bento-grid";
 import { DiMsqlServer } from "react-icons/di";
 import GradientText from "@/components/ui/gradient-text";
 import { AiOutlineAntDesign } from "react-icons/ai";
-import { useUser, useTechStack, useSkills } from "@/hooks/use-portfolio-data";
-import { TechStack, Skill } from "@/types";
+import { useUser, useTechStack } from "@/hooks/use-portfolio-data";
+import { TechStack } from "@/types";
 
-// Icon mapping
+// Icon mapping for tech stack
 const iconMap: Record<string, any> = {
-  // Core Languages
-  FaHtml5,
-  SiTypescript,
-  FaJava, // Java icon from fa
-  PiFileCppFill, // C++ icon
-
-  // Frontend
+  // Client-side
   FaReact,
   SiNextdotjs,
   SiTailwindcss,
-  SiShadcnui,
   AiOutlineAntDesign,
+  SiShadcnui,
   SiReactquery,
   SiNotion, // Using as Zustand placeholder
 
-  // Backend
+  // Server-side
   FaNode,
   SiNestjs,
-  SiSocketdotio,
-
-  // Databases
   SiPostgresql,
   SiMongodb,
+  SiRedis,
+  SiDocker,
+  SiSocketdotio,
+  SiSwagger,
   DiMsqlServer,
   SiOracle,
+};
 
-  // DevOps & Tools
-  SiDocker,
-  FaDocker, // fallback for Docker
-  FaLinux,
-  FaGitAlt,
-  FaGithub,
-  FaGitlab,
-  SiSwagger,
-  SiPostman,
+// Brand colors for tech icons
+const techColors: Record<string, string> = {
+  // Client-side
+  FaReact: "#61DAFB", // React cyan
+  SiNextdotjs: "#000000", // Next.js black (will use white in dark mode)
+  SiTailwindcss: "#06B6D4", // Tailwind cyan
+  AiOutlineAntDesign: "#1890FF", // Ant Design blue
+  SiShadcnui: "#000000", // Shadcn black
+  SiReactquery: "#FF4154", // React Query red
+  SiNotion: "#000000", // Notion black (Zustand placeholder)
 
-  // Design
-  FaFigma,
-
-  // Legacy/Fallback
-  SiRefine,
+  // Server-side
+  FaNode: "#339933", // Node.js green
+  SiNestjs: "#E0234E", // NestJS red
+  SiPostgresql: "#336791", // PostgreSQL blue
+  SiMongodb: "#47A248", // MongoDB green
+  SiRedis: "#DC382D", // Redis red
+  SiDocker: "#2496ED", // Docker blue
+  SiSocketdotio: "#010101", // Socket.io black
+  SiSwagger: "#85EA2D", // Swagger green
+  DiMsqlServer: "#CC2927", // SQL Server red
+  SiOracle: "#F80000", // Oracle red
 };
 
 export default function AboutSection() {
   const { data: user, isLoading: userLoading } = useUser();
   const { data: techStack = [], isLoading: techLoading } = useTechStack();
-  const { data: skills = [], isLoading: skillsLoading } = useSkills();
 
-  const isLoading = userLoading || techLoading || skillsLoading;
+  const isLoading = userLoading || techLoading;
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -126,6 +106,18 @@ export default function AboutSection() {
       id="about"
       className="space-y-12 my-12"
     >
+      {/* Greeting Section */}
+      <motion.div variants={itemVariants} className="text-center mb-12">
+        <motion.p
+          className="text-xl md:text-2xl text-[#F0F0F0] font-light italic"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3, duration: 0.5 }}
+        >
+          &ldquo;Hey, it&apos;s bin — just refactoring life again!&rdquo;
+        </motion.p>
+      </motion.div>
+
       {/* Section Title */}
       <motion.h2 variants={itemVariants} className="text-3xl font-bold mb-8">
         <GradientText>About Me</GradientText>
@@ -146,96 +138,103 @@ export default function AboutSection() {
         )}
       </motion.div>
 
-      {/* Professional Skills */}
-      <motion.div variants={itemVariants} className="mb-12">
-        <h3 className="text-2xl font-semibold mb-6">
-          <GradientText>Professional Skills</GradientText>
-        </h3>
-        {isLoading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-            {Array(6)
-              .fill(0)
-              .map((_, index) => (
-                <div
-                  key={index}
-                  className="animate-pulse flex items-start space-x-2"
-                >
-                  <div className="w-2 h-2 bg-gray-700 rounded-full mt-2 flex-shrink-0"></div>
-                  <div className="h-4 bg-gray-700 rounded w-full"></div>
-                </div>
-              ))}
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-            {skills.map((skill, index) => (
-              <motion.div
-                key={skill.id}
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: index * 0.05 }}
-                className="flex items-start space-x-2"
-              >
-                <motion.div
-                  className="w-2 h-2 bg-gradient-to-r from-white to-gray-400 rounded-full mt-2 flex-shrink-0"
-                  whileHover={{ scale: 1.5 }}
-                />
-                <span className="text-sm text-[#F0F0F0] leading-relaxed">
-                  {skill.title}
-                </span>
-              </motion.div>
-            ))}
-          </div>
-        )}
-      </motion.div>
-
       {/* Tech Stack */}
       <motion.div variants={itemVariants}>
-        <h3 className="text-2xl font-semibold mb-6">
-          <GradientText>Stack</GradientText>
+        <h3 className="text-2xl font-semibold mb-8">
+          <GradientText>Tech Stack</GradientText>
         </h3>
         {isLoading ? (
-          <div className="grid grid-cols-4 gap-6">
-            {Array(12)
+          <div className="space-y-8">
+            {Array(4)
               .fill(0)
-              .map((_, index) => (
-                <div
-                  key={index}
-                  className="animate-pulse flex flex-col items-center space-y-3 p-4"
-                >
-                  <div className="w-10 h-10 bg-gray-700 rounded"></div>
-                  <div className="h-4 bg-gray-700 rounded w-16"></div>
+              .map((_, categoryIndex) => (
+                <div key={categoryIndex}>
+                  <div className="h-6 bg-gray-700 rounded w-32 mb-4"></div>
+                  <div className="grid grid-cols-4 md:grid-cols-6 gap-4">
+                    {Array(6)
+                      .fill(0)
+                      .map((_, index) => (
+                        <div
+                          key={index}
+                          className="animate-pulse flex flex-col items-center space-y-2 p-3"
+                        >
+                          <div className="w-8 h-8 bg-gray-700 rounded"></div>
+                          <div className="h-3 bg-gray-700 rounded w-12"></div>
+                        </div>
+                      ))}
+                  </div>
                 </div>
               ))}
           </div>
         ) : (
-          <div className="grid grid-cols-4 gap-6">
-            {techStack.map((tech, index) => {
-              const IconComponent = iconMap[tech.iconName];
-              return (
-                <motion.div
-                  key={tech.id}
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: index * 0.1 }}
-                  whileHover={{
-                    scale: 1.1,
-                    y: -5,
-                  }}
-                  className="flex flex-col items-center space-y-3 p-4 rounded-lg bg-transparent hover:bg-white/5 transition-all duration-300 cursor-pointer"
-                >
-                  {IconComponent ? (
-                    <IconComponent className="w-10 h-10 text-[#F0F0F0]" />
-                  ) : (
-                    <div className="w-10 h-10 bg-gray-600 rounded flex items-center justify-center text-xs">
-                      ?
-                    </div>
-                  )}
-                  <span className="text-sm text-[#F0F0F0] text-center font-light">
-                    {tech.name}
-                  </span>
-                </motion.div>
-              );
-            })}
+          <div className="space-y-8">
+            {/* Group tech stack by category */}
+            {Object.entries(
+              techStack.reduce((acc, tech) => {
+                const category = tech.category || "other";
+                if (!acc[category]) acc[category] = [];
+                acc[category].push(tech);
+                return acc;
+              }, {} as Record<string, TechStack[]>)
+            ).map(([category, techs], categoryIndex) => (
+              <motion.div
+                key={category}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: categoryIndex * 0.2 }}
+              >
+                <h4 className="text-lg font-medium mb-4 capitalize text-gray-300">
+                  {category === "client" && "🎨 Client-side"}
+                  {category === "server" && "⚙️ Server-side"}
+                  {category === "frontend" && "🎨 Frontend"}
+                  {category === "backend" && "⚙️ Backend"}
+                  {category === "database" && "🗄️ Database"}
+                  {category === "devops" && "🚀 DevOps & Tools"}
+                  {category === "design" && "🎭 Design"}
+                  {category === "other" && "💻 Other Languages"}
+                </h4>
+                <div className="grid grid-cols-4 md:grid-cols-6 gap-4">
+                  {techs.map((tech, index) => {
+                    const IconComponent = iconMap[tech.iconName];
+                    const brandColor = techColors[tech.iconName];
+
+                    return (
+                      <motion.div
+                        key={tech.id}
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{
+                          delay: categoryIndex * 0.2 + index * 0.05,
+                        }}
+                        whileHover={{
+                          scale: 1.1,
+                          y: -5,
+                        }}
+                        className="flex flex-col items-center space-y-2 p-3 rounded-lg bg-transparent hover:bg-white/5 transition-all duration-300 cursor-pointer group"
+                      >
+                        {IconComponent ? (
+                          <IconComponent
+                            className="w-8 h-8 group-hover:text-[#F0F0F0] transition-colors duration-300"
+                            style={
+                              {
+                                color: brandColor || "#F0F0F0",
+                              } as React.CSSProperties
+                            }
+                          />
+                        ) : (
+                          <div className="w-8 h-8 bg-gray-600 rounded flex items-center justify-center text-xs">
+                            ?
+                          </div>
+                        )}
+                        <span className="text-xs text-gray-300 text-center font-light group-hover:text-white transition-colors duration-300">
+                          {tech.name}
+                        </span>
+                      </motion.div>
+                    );
+                  })}
+                </div>
+              </motion.div>
+            ))}
           </div>
         )}
       </motion.div>

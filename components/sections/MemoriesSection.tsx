@@ -2,62 +2,19 @@
 
 import { motion } from "framer-motion";
 import GradientText from "@/components/ui/gradient-text";
-import { FocusCards } from "@/components/ui/focus-cards";
+import { CometCard } from "@/components/ui/comet-card";
 import {
-  DraggableCardContainer,
-  DraggableCardBody,
-} from "@/components/ui/draggable-card";
-import { FaCamera, FaPenFancy } from "react-icons/fa";
+  FaCamera,
+  FaPenFancy,
+  FaMapMarkerAlt,
+  FaCalendarAlt,
+} from "react-icons/fa";
 import Image from "next/image";
-import { AnimatedTestimonials } from "@/components/ui/animated-testimonials";
 import { useMemories } from "@/hooks/use-portfolio-data";
 import { Memory } from "@/types";
 
 export default function MemoriesSection() {
   const { data: memories = [], isLoading } = useMemories({ visible: true });
-
-  // Transform memories to focus photos format
-  const focusPhotos = memories.map((memory: Memory) => ({
-    title: memory.title,
-    src:
-      memory.images?.[0]?.url ||
-      "https://images.pexels.com/photos/1181671/pexels-photo-1181671.jpeg?auto=compress&cs=tinysrgb&w=800",
-  }));
-
-  // Create testimonials from memories (using memory descriptions as quotes)
-  const testimonials =
-    memories.length > 0
-      ? memories.slice(0, 3).map((memory: Memory) => ({
-          quote: memory.description,
-          name: memory.title,
-          designation: memory.location || "Life Journey",
-          src:
-            memory.images?.[0]?.url ||
-            "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=3560&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-        }))
-      : [
-          {
-            quote:
-              "The attention to detail and innovative features have completely transformed our workflow. This is exactly what we've been looking for.",
-            name: "Sarah Chen",
-            designation: "Product Manager at TechFlow",
-            src: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=3560&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-          },
-          {
-            quote:
-              "Implementation was seamless and the results exceeded our expectations. The platform's flexibility is remarkable.",
-            name: "Michael Rodriguez",
-            designation: "CTO at InnovateSphere",
-            src: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=3540&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-          },
-          {
-            quote:
-              "This solution has significantly improved our team's productivity. The intuitive interface makes complex tasks simple.",
-            name: "Emily Watson",
-            designation: "Operations Director at CloudScale",
-            src: "https://images.unsplash.com/photo-1623582854588-d60de57fa33f?q=80&w=3540&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-          },
-        ];
 
   // Transform memories to blog posts format
   const blogPosts = memories.map((memory: Memory) => ({
@@ -112,18 +69,95 @@ export default function MemoriesSection() {
           <GradientText>Photo Gallery</GradientText>
         </h3>
         {isLoading ? (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {Array(3)
               .fill(0)
               .map((_, index) => (
                 <div
                   key={index}
-                  className="h-64 bg-gray-700 rounded-lg animate-pulse"
+                  className="h-96 bg-gray-700 rounded-lg animate-pulse"
                 ></div>
               ))}
           </div>
-        ) : focusPhotos.length > 0 ? (
-          <FocusCards cards={focusPhotos} />
+        ) : memories.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {memories.map((memory: Memory, index) => (
+              <motion.div
+                key={memory.id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.1 }}
+              >
+                <CometCard>
+                  <button
+                    type="button"
+                    className="my-4 flex w-full cursor-pointer flex-col items-stretch rounded-[16px] border-0 bg-[#1F2121] p-2 saturate-100 md:p-4"
+                    aria-label={`View memory ${memory.title}`}
+                    style={{
+                      transformStyle: "preserve-3d",
+                      transform: "none",
+                      opacity: 1,
+                    }}
+                  >
+                    <div className="mx-2 flex-1">
+                      <div className="relative mt-2 aspect-[3/4] w-full">
+                        <Image
+                          src={
+                            memory.images?.[0]?.url ||
+                            "/memories/vinh-hy-02.JPG"
+                          }
+                          alt={memory.images?.[0]?.alt || memory.title}
+                          fill
+                          loading="lazy"
+                          className="absolute inset-0 h-full w-full rounded-[16px] bg-[#000000] object-cover saturate-100 brightness-100"
+                          style={{
+                            boxShadow: "rgba(0, 0, 0, 0.05) 0px 5px 6px 0px",
+                            opacity: 1,
+                            filter: "none",
+                          }}
+                        />
+                      </div>
+                    </div>
+                    <div className="mt-2 flex flex-col gap-2 flex-shrink-0 p-4 font-mono text-white">
+                      <div className="flex items-center justify-between">
+                        <div className="text-sm font-medium truncate">
+                          {memory.title}
+                        </div>
+                        <div className="text-xs text-gray-300 opacity-75 capitalize">
+                          {memory.mood}
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2 text-xs text-gray-400">
+                        <FaCalendarAlt className="w-3 h-3" />
+                        <span>
+                          {new Date(memory.date).toLocaleDateString("en-US", {
+                            month: "short",
+                            year: "numeric",
+                          })}
+                        </span>
+                      </div>
+                      {memory.location && (
+                        <div className="flex items-center gap-2 text-xs text-gray-400">
+                          <FaMapMarkerAlt className="w-3 h-3" />
+                          <span className="truncate">{memory.location}</span>
+                        </div>
+                      )}
+                      <div className="flex flex-wrap gap-1 mt-2">
+                        {memory.tags?.slice(0, 3).map((tag, tagIndex) => (
+                          <span
+                            key={tagIndex}
+                            className="text-xs bg-gradient-to-r from-blue-500/20 to-purple-500/20 text-blue-300 px-2 py-1 rounded-full border border-blue-500/30"
+                          >
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  </button>
+                </CometCard>
+              </motion.div>
+            ))}
+          </div>
         ) : (
           <div className="text-center text-gray-400 py-8">
             No photos available
