@@ -10,6 +10,7 @@ import {
   FaDownload,
 } from "react-icons/fa";
 import { MdEmail } from "react-icons/md";
+import { SiNestjs } from "react-icons/si";
 import FloatingDock from "@/components/ui/floating-dock";
 import GradientText from "@/components/ui/gradient-text";
 import ShimmerButton from "@/components/ui/shimmer-button";

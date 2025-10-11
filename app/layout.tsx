@@ -16,6 +16,11 @@ export const metadata: Metadata = {
   title: "Vo Dinh Quan",
   description:
     "Portfolio of Vo Dinh Quan, a passionate Fullstack TypeScript Developer specializing in React, Next.js, and modern web technologies.",
+  icons: {
+    icon: "/favicon.svg",
+    shortcut: "/favicon.svg",
+    apple: "/favicon.svg",
+  },
 };
 
 export default function RootLayout({
