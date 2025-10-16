@@ -113,7 +113,7 @@ export default function AboutSection() {
       <div className="text-center mb-12">
         {/* parent motion.div sẽ animated cả block, tránh áp animation trực tiếp lên <span>/<inline> */}
         <div
-          className="text-xl md:text-2xl text-[#F0F0F0] font-light italic mb-5"
+          className="text-xl md:text-2xl text-[#F0F0F0] font-light italic mb-7"
           // remove initial/animate here (handled by parent)
         >
           &ldquo;Hey, it&apos;s{" "}
@@ -124,7 +124,7 @@ export default function AboutSection() {
         </div>
 
         <div
-          className="text-base md:text-base text-[#A0A0A0] italic mt-2 leading-relaxed"
+          className="text-base md:text-sm text-[#A0A0A0] italic mt-2 leading-relaxed"
           // also plain <p>, parent controls animation
         >
           I&apos;m a{" "}
