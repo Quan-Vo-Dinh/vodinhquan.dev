@@ -1,5 +1,7 @@
 "use client";
 
+import { useAnimation } from "framer-motion";
+import { useEffect } from "react";
 import { motion } from "framer-motion";
 import { FaReact, FaNode } from "react-icons/fa";
 import { Highlighter } from "@/components/ui/highlighter";
@@ -108,33 +110,30 @@ export default function AboutSection() {
       className="space-y-12 my-12"
     >
       {/* Greeting Section */}
-      <motion.div variants={itemVariants} className="text-center mb-12">
-        <motion.p
-          className="text-xl md:text-2xl text-[#F0F0F0] font-light italic"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3, duration: 0.5 }}
+      <div className="text-center mb-12">
+        {/* parent motion.div sẽ animated cả block, tránh áp animation trực tiếp lên <span>/<inline> */}
+        <div
+          className="text-xl md:text-2xl text-[#F0F0F0] font-light italic mb-5"
+          // remove initial/animate here (handled by parent)
         >
           &ldquo;Hey, it&apos;s{" "}
           <Highlighter action="highlight" color="#87CEFA">
             bin
           </Highlighter>
           — just refactoring life again!&rdquo;
-        </motion.p>
+        </div>
 
-        <motion.p
-          className="text-base md:text-lg text-[#A0A0A0] italic mt-2 leading-relaxed"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5, duration: 0.5 }}
+        <div
+          className="text-base md:text-base text-[#A0A0A0] italic mt-2 leading-relaxed"
+          // also plain <p>, parent controls animation
         >
           I&apos;m a{" "}
           <Highlighter action="underline" color="#FF9800">
             “thợ đụng”
-          </Highlighter>
+          </Highlighter>{" "}
           — đụng đâu làm đó.
-        </motion.p>
-      </motion.div>
+        </div>
+      </div>
 
       {/* Section Title */}
       <motion.h2 variants={itemVariants} className="text-3xl font-bold mb-8">
