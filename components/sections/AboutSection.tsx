@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { FaReact, FaNode } from "react-icons/fa";
+import { Highlighter } from "@/components/ui/highlighter";
 import {
   SiTailwindcss,
   SiNotion,
@@ -114,7 +115,24 @@ export default function AboutSection() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3, duration: 0.5 }}
         >
-          &ldquo;Hey, it&apos;s bin — just refactoring life again!&rdquo;
+          &ldquo;Hey, it&apos;s{" "}
+          <Highlighter action="highlight" color="#87CEFA">
+            bin
+          </Highlighter>
+          — just refactoring life again!&rdquo;
+        </motion.p>
+
+        <motion.p
+          className="text-base md:text-lg text-[#A0A0A0] italic mt-2 leading-relaxed"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.5, duration: 0.5 }}
+        >
+          I&apos;m a{" "}
+          <Highlighter action="underline" color="#FF9800">
+            “thợ đụng”
+          </Highlighter>
+          — đụng đâu làm đó.
         </motion.p>
       </motion.div>
 
