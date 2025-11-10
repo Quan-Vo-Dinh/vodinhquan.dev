@@ -123,7 +123,7 @@ export default function AboutSection() {
           — just refactoring life again!&rdquo;
         </div>
 
-        <div
+        {/* <div
           className="text-base md:text-sm text-[#A0A0A0] italic mt-2 leading-relaxed"
           // also plain <p>, parent controls animation
         >
@@ -132,7 +132,7 @@ export default function AboutSection() {
             “thợ đụng”
           </Highlighter>{" "}
           — đụng đâu làm đó.
-        </div>
+        </div> */}
       </div>
 
       {/* Section Title */}
